@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>FlixBus India – Bus Partner IRR Model</title>
+  <title>Bus Operator IRR Tool</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     :root {
@@ -270,7 +270,7 @@
 <!-- ══ KPI BAR ══ -->
 <div class="kpi-bar">
   <div class="kpi"><div class="kpi-l">TCO / km</div><div class="kpi-v" id="kpi-tco">—</div></div>
-  <div class="kpi"><div class="kpi-l">FlixBus Payout / km</div><div class="kpi-v" id="kpi-rev">—</div></div>
+  <div class="kpi"><div class="kpi-l">Operator Payout / km</div><div class="kpi-v" id="kpi-rev">—</div></div>
   <div class="kpi"><div class="kpi-l">Monthly Net Income</div><div class="kpi-v" id="kpi-inc">—</div></div>
   <div class="kpi"><div class="kpi-l">Working Capital</div><div class="kpi-v" id="kpi-wc">—</div></div>
   <div class="kpi"><div class="kpi-l">Annual IRR</div><div class="kpi-v" id="kpi-irr">—</div></div>
@@ -560,7 +560,7 @@
       <div class="f"><label>Laundry / KM (derived)</label><div class="dv" id="d-laundKm">—</div></div>
     </div>
     <div class="g4">
-      <div class="f"><label>Other Flix Costs (₹/km)</label><input type="number" id="otherFlix" value="0.5" step="0.1" oninput="calc()"></div>
+      <div class="f"><label>Other Platform Costs (₹/km)</label><input type="number" id="otherFlix" value="0.5" step="0.1" oninput="calc()"></div>
       <div class="f"><label>Total Misc / KM (derived)</label><div class="dv" id="d-miscKm">—</div></div>
     </div>
 
@@ -630,9 +630,9 @@
     <div class="ct">💰 Revenue — All Streams</div>
     <div class="info-box info-green" style="margin-bottom:16px"><strong>How it works:</strong> Operator receives TCO/km × (1 + Margin%) as weekly guaranteed payout. Ancillary income (rest stops, cargo) accrues directly as additional profit outside of TCO.</div>
 
-    <!-- ── Sub-section: FlixBus Guarantee ── -->
+    <!-- ── Sub-section: Revenue Guarantee ── -->
     <div style="background:#f8fafc;border:1.5px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:14px">
-      <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px">📦 FlixBus Revenue Guarantee (Margin on TCO)</div>
+      <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px">📦 Revenue Guarantee (Margin on TCO)</div>
       <div class="g4">
         <div class="f">
           <label style="display:flex;align-items:baseline;justify-content:space-between">
@@ -655,7 +655,7 @@
           <input type="hidden" id="marginPct" value="-5">
           <div class="hint" style="margin-top:6px">Range: -10% to +5% in 1% steps</div>
         </div>
-        <div class="f"><label>FlixBus Payout / KM</label><div class="dv" id="d-revKm">—</div></div>
+        <div class="f"><label>Operator Payout / KM</label><div class="dv" id="d-revKm">—</div></div>
         <div class="f"><label>Margin / KM</label><div class="dv" id="d-marKm">—</div></div>
         <div class="f"><label>Monthly Margin Income</label><div class="dv" id="d-marMo">—</div></div>
       </div>
@@ -670,11 +670,18 @@
         <div class="f"><label>Cargo Revenue (₹ / round trip)</label><input type="number" id="cargo" value="0" oninput="calc()"><div class="hint">e.g. ₹1,000–₹5,000/RT</div></div>
         <div class="f"><label>Cargo / Month</label><div class="dv" id="d-cargoMo">—</div></div>
       </div>
+      <div class="g4" style="margin-top:10px">
+        <div class="f"><label>PV of Rest Stop (over term)</label><div class="dv" id="d-pvRest">—</div><div class="hint">Discounted at loan interest rate</div></div>
+        <div class="f"><label>Flat Total — Rest Stop</label><div class="dv" id="d-totalRest">—</div><div class="hint">Nominal (undiscounted)</div></div>
+        <div class="f"><label>PV of Cargo (over term)</label><div class="dv" id="d-pvCargo">—</div><div class="hint">Discounted at loan interest rate</div></div>
+        <div class="f"><label>Flat Total — Cargo</label><div class="dv" id="d-totalCargo">—</div><div class="hint">Nominal (undiscounted)</div></div>
+      </div>
     </div>
 
     <!-- ── Totals ── -->
-    <div style="background:var(--dark);border-radius:10px;padding:14px 18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+    <div style="background:var(--dark);border-radius:10px;padding:14px 18px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px">
       <div><div style="color:#888;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Ancillary / Month</div><div style="color:#fbbf24;font-size:18px;font-weight:800" id="d-ancMo">—</div></div>
+      <div><div style="color:#6b7280;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">PV of Total Ancillary</div><div style="color:#fde68a;font-size:18px;font-weight:800" id="d-pvAnc">—</div><div style="color:#6b7280;font-size:10px;margin-top:2px">vs flat: <span id="d-totalAnc">—</span></div></div>
       <div><div style="color:#888;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Net Income / Month</div><div style="color:var(--green);font-size:22px;font-weight:900" id="d-totalInc">—</div></div>
       <div><div style="color:#888;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Annual Net Income</div><div style="color:#fff;font-size:18px;font-weight:800" id="d-annInc">—</div></div>
     </div>
@@ -682,7 +689,7 @@
 
   <div class="card">
     <div class="ct">🏦 Working Capital Requirement</div>
-    <div class="info-box info-blue"><strong>Working Capital Logic:</strong> Partner must fund operations Mon–Sun before receiving FlixBus payment the following Friday. Float needed = 1 week of TCO costs.</div>
+    <div class="info-box info-blue"><strong>Working Capital Logic:</strong> Partner must fund operations Mon–Sun before receiving operator payment the following Friday. Float needed = 1 week of TCO costs.</div>
     <div class="g4">
       <div class="f"><label>Weekly KMs (derived)</label><div class="dv" id="d-wkKm">—</div></div>
       <div class="f"><label>Weekly TCO Cost (derived)</label><div class="dv" id="d-wkTco">—</div></div>
@@ -776,7 +783,7 @@
     <div class="ih-l">
       <div class="ih-tag">Annual XIRR — Time-Weighted Return</div>
       <div class="ih-big" id="ih-irr">—</div>
-      <div class="ih-sub">FlixBus Margin + Ancillary Revenue + Bus Residual Value over Agreement Term</div>
+      <div class="ih-sub">Operator Margin + Ancillary Revenue + Bus Residual Value over Agreement Term</div>
     </div>
     <div class="ih-stats">
       <div class="ih-stat"><div class="ih-sv" id="ih-totInc">—</div><div class="ih-sl">Total Operating Income</div></div>
@@ -789,7 +796,7 @@
   <!-- KPI Cards -->
   <div class="mg">
     <div class="mc gr"><div class="ml">TCO / KM</div><div class="mv gr" id="mc-tco">—</div><div class="ms">Total Cost of Ops</div></div>
-    <div class="mc bl"><div class="ml">FlixBus Payout / KM</div><div class="mv bl" id="mc-rev">—</div><div class="ms">Guaranteed Revenue</div></div>
+    <div class="mc bl"><div class="ml">Operator Payout / KM</div><div class="mv bl" id="mc-rev">—</div><div class="ms">Guaranteed Revenue</div></div>
     <div class="mc am"><div class="ml">Monthly Net Income</div><div class="mv am" id="mc-inc">—</div><div class="ms">Margin + Ancillary</div></div>
     <div class="mc vi"><div class="ml">Working Capital</div><div class="mv vi" id="mc-wc">—</div><div class="ms">1-Week Float</div></div>
     <div class="mc rd"><div class="ml">Total Investment</div><div class="mv rd" id="mc-inv">—</div><div class="ms">Downpayment + WC</div></div>
@@ -800,7 +807,7 @@
     <div class="ct">📈 Return on Investment Breakdown</div>
     <div class="ret-grid">
       <div class="ret-card" style="border-top:3px solid var(--green)">
-        <div class="ret-label">FlixBus Margin (Term)</div>
+        <div class="ret-label">Operator Margin (Term)</div>
         <div class="ret-val" style="color:#2a7a00" id="rb-margin">—</div>
         <div class="ret-sub">Cumulative margin income</div>
       </div>
@@ -844,7 +851,7 @@
       <thead>
         <tr>
           <th>Period</th>
-          <th class="r">FlixBus Revenue</th>
+          <th class="r">Operator Revenue</th>
           <th class="r">Ancillary Revenue</th>
           <th class="r">Total Income</th>
           <th class="r">TCO (Costs)</th>
@@ -888,11 +895,11 @@
       <div class="roce-panel right">
         <div class="roce-ph">Returns Breakdown</div>
         <div class="roce-row">
-          <span class="roce-row-label">1. FlixBus Margin (entire agreement term)</span>
+          <span class="roce-row-label">1. Operator Margin (entire agreement term)</span>
           <span class="roce-row-val green" id="roce-margin">—</span>
         </div>
         <div class="roce-row">
-          <span class="roce-row-label">2. Rest Stop + Cargo Revenue (term)</span>
+          <span class="roce-row-label">2. Rest Stop + Cargo — PV <span style="font-size:10px;color:#6b7280">(flat: <span id="roce-anc-flat">—</span>)</span></span>
           <span class="roce-row-val amber" id="roce-anc">—</span>
         </div>
         <div class="roce-row" style="background:#1a1a1a;padding:5px 8px;border-radius:5px;margin:4px 0">
@@ -1145,6 +1152,14 @@ function updateMarginSlider(val){
   calc();
 }
 
+// ─ PV of annuity (ordinary, monthly PMT, annual discount rate) ─
+function pvAnnuity(pmt, rAnnPct, nMonths){
+  if(pmt <= 0 || nMonths <= 0) return 0;
+  const r = rAnnPct / 100 / 12;
+  if(r <= 0) return pmt * nMonths;
+  return pmt * (1 - Math.pow(1 + r, -nMonths)) / r;
+}
+
 // ─ EMI ─
 function emi(P, rPa, n){
   if(P<=0||n<=0) return 0;
@@ -1374,6 +1389,18 @@ function calc(){
   set('d-resVal', inr(resVal));
   set('d-pvRes',  inr(pvRes)+' (discounted @ '+discR+'% p.a.)');
 
+  // ── PV of ancillary streams (uses same discount rate as residual) ──
+  const pvRest  = pvAnnuity(restMo,  discR, agrTerm);
+  const pvCargo = pvAnnuity(cargoMo, discR, agrTerm);
+  const pvAnc   = pvRest + pvCargo;
+  const flatAnc = ancMo * agrTerm;
+  set('d-pvRest',    ancMo>0 ? inr(pvRest)  : '—');
+  set('d-pvCargo',   ancMo>0 ? inr(pvCargo) : '—');
+  set('d-totalRest', ancMo>0 ? inr(restMo*agrTerm)  : '—');
+  set('d-totalCargo',ancMo>0 ? inr(cargoMo*agrTerm) : '—');
+  set('d-pvAnc',     ancMo>0 ? inr(pvAnc)   : '—');
+  set('d-totalAnc',  ancMo>0 ? inr(flatAnc) : '—');
+
   // ── IRR ──
   // Cash flows: Month 0 = -(dp+wc), Month 1..N = totalIncMo, Month N += resVal+wc
   const cfs=[-(totInv)];
@@ -1452,7 +1479,8 @@ function calc(){
   set('roce-wc',       inr(wc));
   set('roce-totcap',   inr(totInv));
   set('roce-margin',   inr(totalMargin));
-  set('roce-anc',      inr(totalAnc));
+  set('roce-anc',      ancMo>0 ? inr(pvAnc) : '₹0 (not set)');
+  set('roce-anc-flat', ancMo>0 ? inr(totalAnc) : '—');
   set('roce-opret',    inr(totalMargin+totalAnc));
   set('roce-pvres',    inr(pvRes));
   set('roce-wcret',    inr(wc));
